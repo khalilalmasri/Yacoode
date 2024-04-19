@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+Color firstGradientColor = const Color.fromARGB(255, 201, 127, 241);
+Color secondGradientColor = const Color.fromARGB(255, 148, 33, 210);
+Color thirdGradientColor = Colors.deepPurple;
 myBoxDecorationbg() {
-  return const BoxDecoration(
+  return BoxDecoration(
     gradient: LinearGradient(
       colors: [
-        Color.fromARGB(255, 201, 127, 241),
-        Color.fromARGB(255, 148, 33, 210),
-        Colors.deepPurple,
+        firstGradientColor,
+        secondGradientColor,
+        thirdGradientColor,
       ],
     ),
   );
 }
+
+

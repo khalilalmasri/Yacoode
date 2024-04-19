@@ -3,12 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:yacoode/ui/splash/splash_page.dart';
-// import 'package:yacoode/ui/splash/splash_page.dart';
-
-// import 'DashBoard.dart';
-// import 'PlayList.dart';
-
+import 'package:yacoode/data/models/apis.dart';
+import 'package:yacoode/ui/musics_list/widgets/style.dart';
+import 'package:yacoode/ui/splash/splash_home.dart';
 bool success = false;
 String errorMessage = '';
 
@@ -18,16 +15,16 @@ class LoginScreen extends StatelessWidget {
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   Future<void> _login(String email, String password) async {
-    final Uri url = Uri.parse('http://api.feesolution.com/api/client/login');
+    final Uri url = Uri.parse(myurl + myurlLogIn);
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
-        'phone_number': email,
+        'email': email,
         'password': password,
       }),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Accept": "application/json; charset=UTF-8",
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
     );
     final responseData = jsonDecode(response.body);
@@ -61,13 +58,14 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      title: 'BUDDY login',
+      logo: const AssetImage('assets/Buddy-Box-Alpha.png'),
+      // title: 'BUDDY login',
       userValidator: (value) {
         return null;
       },
 
       onLogin: _authUser,
-      userType: LoginUserType.phone,
+      // userType: LoginUserType.phone,
       onSignup: _signupUser,
 
       // loginProviders: <LoginProvider>[
@@ -83,9 +81,22 @@ class LoginScreen extends StatelessWidget {
       //     },
       //   ),
       // ],
+
+      //  const Image(
+      //   image: AssetImage('assets/Buddy-Box-Alpha.png'),
+      //   fit: BoxFit.cover,
+      //   height: 50, // Set image height to 50
+      //   width: 50, // Adjust image width as needed
+      // ),
+
+      theme: LoginTheme(
+        pageColorLight: firstGradientColor,
+        pageColorDark: thirdGradientColor,
+      ),
+
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const SplashPage(
+          builder: (context) => const SplashHomePage(
               // title: 'play',
               ),
         ));

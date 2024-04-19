@@ -2,12 +2,25 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:yacoode/ui/musics_list/widgets/custom_text.dart';
 
+import '../../data/models/apis.dart';
 import '../../data/models/music_model.dart';
+import '../musics_list/widgets/custom_app_bar.dart';
 import '../musics_list/widgets/style.dart';
 
 bool isUrlHaveSong = true;
+bool isPlaying = false;
 String errorMassageUrl = 'No song';
+int thenewindex = 0;
+comp(int p, int w, List q, void f()) {
+  if (p == q.length - 1) {
+    p = 0;
+  } else {
+    p = ++w;
+  }
+  f();
+}
 
 // ignore: must_be_immutable
 class AudioPlayerPagen extends StatefulWidget {
@@ -29,7 +42,7 @@ class AudioPlayerPagen extends StatefulWidget {
       // ignore: avoid_print
       print('Error playing audio.............................: $e');
       isUrlHaveSong = false;
-    }  
+    }
   }
 
   @override
@@ -42,15 +55,20 @@ class _AudioPlayerPagenState extends State<AudioPlayerPagen> {
 
   @override
   void initState() {
-    widget.playAudioFromUrl(
-        // musicsId[widget.index]
-        musicsIdInk[0]['url'].toString());
+    widget
+        .playAudioFromUrl(musicsId[widget.index]['url'].toString())
+        .then((_) => getMaxDurationstart());
 
-    setState(() {});
-    // widget.player.state = PlayerState.playing;
     // setState(() {});
 
     super.initState();
+  }
+
+  getMaxDurationstart() {
+    widget.player.getDuration().then((value) {
+      maxDuration = value ?? const Duration(seconds: 0);
+      setState(() {});
+    });
   }
 
   @override
@@ -70,14 +88,7 @@ class _AudioPlayerPagenState extends State<AudioPlayerPagen> {
         ),
         flexibleSpace: Container(decoration: myBoxDecorationbg()),
         backgroundColor: const Color.fromARGB(255, 60, 37, 211),
-        title: const Text(
-          "Budy Player",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
-          ),
-        ),
+        title: myHeaderText('Buddy Player'),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -85,45 +96,31 @@ class _AudioPlayerPagenState extends State<AudioPlayerPagen> {
         padding: const EdgeInsets.all(20),
         decoration: myBoxDecorationbg(),
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 60),
             Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
-                height: MediaQuery.of(context).size.width * 0.7,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          // musicsId[widget.index]
-                          musicsIdInk[0]['media_image'].toString() != 'null' &&
-                                  musicsId[widget.index]['media_image']
-                                          .toString() !=
-                                      'null'
-                              ? musicsId[widget.index]['media_image'].toString()
-                              : 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbhBFhIQQ3FDLJkEavTSwUiCeeaAxbblI4LUBEyKGeRcmzjaixSDnf31gk0S9BGqwEGwwgpi714lTSnFq9K1RaY1jTT2vf2lU4Nr24T_J8IDNFWBAMorbPjRF-G_7E-buEpM7BOM-U8ornF8ua6Y05ibYD_0bwUsxx2JR_H_N6-0xjq9YtIhUdikzG2MjT/s1080/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9.jpg'),
-                      // musicsId[widget.index % musics.length].cover,
-                      // 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbhBFhIQQ3FDLJkEavTSwUiCeeaAxbblI4LUBEyKGeRcmzjaixSDnf31gk0S9BGqwEGwwgpi714lTSnFq9K1RaY1jTT2vf2lU4Nr24T_J8IDNFWBAMorbPjRF-G_7E-buEpM7BOM-U8ornF8ua6Y05ibYD_0bwUsxx2JR_H_N6-0xjq9YtIhUdikzG2MjT/s1080/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9.jpg'),
-                      fit: BoxFit.cover),
+                child: Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              height: MediaQuery.of(context).size.width * 0.7,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: Image.network(
+                  (musicsId[widget.index]['media_image'].toString() != 'null' &&
+                          musicsId[widget.index]['media_image'].toString() !=
+                              'null'
+                      ? musicsId[widget.index]['media_image'].toString()
+                      : alert),
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
+            )),
             const SizedBox(height: 60),
-            Text(
-                // musicsId[widget.index]
-                isUrlHaveSong
-                    ? musicsId[widget.index]['media_id'].toString()
-                    : errorMassageUrl,
+            Text(musicsId[widget.index]['media_id'].toString(),
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 20)),
-            Text(
-                // musicsId[widget.index
-                //  % musicsId.length
-                // ]
-                // musicsIdInk[0]['playlist_id'].toString(),
-                musicsId[widget.index]['playlist_id'].toString(),
+            Text(musicsId[widget.index]['playlist_id'].toString(),
                 style: TextStyle(
                     color: Colors.white.withOpacity(0.5),
                     fontWeight: FontWeight.w600,
@@ -153,18 +150,18 @@ class _AudioPlayerPagenState extends State<AudioPlayerPagen> {
               children: [
                 IconButton(
                     onPressed: () {
-                      // print(',,,,,,,,,,,,,,,,,,,,,,,');
-                      // print(widget);
-                      widget.player.stop();
-                      // print(musicsId[widget.index]);
-                      // if (widget.index == 0) {
-                      //   // print('stoooooooooooooop');
-                      //   widget.playAudioFromUrl(musicsId[0]['url'].toString());
-                      // } else {
-                      widget.playAudioFromUrl(
-                          musicsId[--widget.index]['url'].toString());
-                      // }
-                      getMaxDuration();
+                      if (thenewindex == 0) {
+                        thenewindex = musicsId.length - 1;
+                        widget.index = musicsId.length - 1;
+                      } else {
+                        thenewindex = --widget.index;
+                      }
+                      print(
+                          '===========######==============######==================$thenewindex from${musicsId.length - 1}');
+                      widget
+                          .playAudioFromUrl(
+                              musicsId[thenewindex]['url'].toString())
+                          .then((_) => getMaxDuration());
                     },
                     icon: const Icon(
                       Icons.skip_previous,
@@ -172,39 +169,34 @@ class _AudioPlayerPagenState extends State<AudioPlayerPagen> {
                       color: Colors.white,
                     )),
                 IconButton(
-                    onPressed: () {
-                      widget.player.state == PlayerState.playing
-                          ? widget.player.pause()
-                          : widget.playAudioFromUrl(
-                              // musicsId[widget.index]
-                              musicsIdInk[0]['url'].toString());
-                      // : widget.player.play(AssetSource(
-                      //     musics[widget.index % musics.length].path));
-                      getMaxDuration();
-                      widget.player.state != PlayerState.playing;
-
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      widget.player.state == PlayerState.playing
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      size: 40,
-                      color: Colors.white,
-                    )),
+                  onPressed: () {
+                    isPlaying = !isPlaying;
+                    widget.player.state == PlayerState.playing
+                        ? widget.player.pause()
+                        : widget.playAudioFromUrl(
+                            musicsId[widget.index]['url'].toString());
+                    getMaxDuration();
+                  },
+                  icon: isPlaying
+                      ? const Icon(Icons.play_arrow)
+                      : const Icon(Icons.pause),
+                  iconSize: 35,
+                  color: Colors.white,
+                ),
                 IconButton(
                     onPressed: () {
-                      widget.player.stop();
-                      if (widget.index == musicsId.length - 1) {
-                        // print('stoooooooooooooop');
-                        widget.playAudioFromUrl(musicsId[0]['url'].toString());
+                      if (thenewindex == musicsId.length - 1) {
+                        thenewindex = 0;
+                        widget.index = 0;
                       } else {
-                        widget.playAudioFromUrl(
-                            musicsId[++widget.index]['url'].toString());
+                        thenewindex = ++widget.index;
                       }
-                      getMaxDuration();
-
-                      setState(() {});
+                      print(
+                          '===========######==============######==================$thenewindex from${musicsId.length - 1}');
+                      widget
+                          .playAudioFromUrl(
+                              musicsId[thenewindex]['url'].toString())
+                          .then((value) => getMaxDuration());
                     },
                     icon: const Icon(
                       Icons.skip_next,

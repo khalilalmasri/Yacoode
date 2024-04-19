@@ -1,8 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:yacoode/data/models/apis.dart';
+import 'package:yacoode/form_music/resources/form_playlist.dart';
 import '../../data/models/music_model.dart';
-
+import '../../data/toys_model.dart';
 import 'my_play_list.dart';
+import 'widgets/custom_card.dart';
+import 'widgets/custom_app_bar.dart';
 import 'widgets/style.dart';
 
 class AllPlayListPage extends StatefulWidget {
@@ -13,14 +19,18 @@ class AllPlayListPage extends StatefulWidget {
 }
 
 @override
-void initState() {
-  // musicsIdInk = musicsIdInk;
-  // fetchDataallPlayList();
-}
-
 class _AllPlayListPageState extends State<AllPlayListPage> {
   String currentPlayListId = '';
   final player = AudioPlayer();
+  void initState() {
+    // musicsIdInk = musicsIdInk;
+    // fetchDataallPlayList();
+    // fetchDataToyslist();
+    // fetchDataallToys();
+    fillToylist();
+    fetchDataMedialist();
+    super.initState();
+  }
 
   Future<void> playAudioFromUrl(String url) async {
     await player.play(UrlSource(url));
@@ -29,12 +39,18 @@ class _AllPlayListPageState extends State<AllPlayListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: myBoxDecorationbg(),
-        ),
-        title: const Text("Buddy All Playlist"),
-        centerTitle: true,
+      appBar: customAppbar("Buddy All Playlist"),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: firstGradientColor,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddPlayList()),
+          );
+          setState(() {});
+        },
+        child: const Icon(Icons.add),
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
@@ -54,7 +70,6 @@ class _AllPlayListPageState extends State<AllPlayListPage> {
                                 allPlayList[index]['id'].toString();
                             await fetchDataPlayIp(currentPlayListId);
                             Navigator.push(
-                              // ignore: use_build_context_synchronously
                               context,
                               PageRouteBuilder(
                                 transitionDuration: const Duration(seconds: 1),
@@ -71,21 +86,14 @@ class _AllPlayListPageState extends State<AllPlayListPage> {
                                     }
                                     //   return Center(
                                     //     child: CircularProgressIndicator(
-                                    //       strokeWidth: 5,
-                                    //       strokeAlign: 10,
-                                    //     ),
-                                    //   );
-                                    // }
+                                    //       strokeWidth: 5,strokeAlign: 10,),);}
                                   },
                                 ),
                                 transitionsBuilder: (context, animation,
                                     secondaryAnimation, child) {
-                                  const begin = Offset(
-                                      0.0, -1.0); // الانتقال من الجهة اليمنى
-                                  const end = Offset
-                                      .zero; // الانتقال إلى الوضع الافتراضي
-                                  const curve =
-                                      Curves.bounceOut; // الانتقال بشكل سلس
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.bounceOut;
                                   var tween = Tween(begin: begin, end: end)
                                       .chain(CurveTween(curve: curve));
                                   var offsetAnimation = animation.drive(tween);
@@ -101,13 +109,13 @@ class _AllPlayListPageState extends State<AllPlayListPage> {
                           },
                           child: MyCard(
                             name: allPlayList[index]['name'].toString(),
-                            imageUrl: (allPlayList[index]['playlist_image'] ==
-                                    null)
-                                ? 'https://www.udacity.com/blog/wp-content/uploads/2021/02/img8.png'
-                                : allPlayList[index]['playlist_image']
-                                    .toString(),
+                            imageUrl:
+                                (allPlayList[index]['playlist_image'] == null)
+                                    ? alert
+                                    : allPlayList[index]['playlist_image']
+                                        .toString(),
                             playlistId: allPlayList[index]['id'].toString(),
-                            audioUrl: allPlayList[index]['url'].toString(),
+                            // audioUrl: allPlayList[index]['url'].toString(),
                           )))
                 ],
               ),

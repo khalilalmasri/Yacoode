@@ -1,8 +1,12 @@
 // ignore: file_names
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:yacoode/form_music/form_media.dart';
+import '../../data/models/apis.dart';
 import '../../data/models/music_model.dart';
 import '../audio_player/audio_player_page.dart';
+import 'widgets/custom_app_bar.dart';
+import 'widgets/custom_card.dart';
 import 'widgets/style.dart';
 
 class MusicsListPagen extends StatefulWidget {
@@ -32,10 +36,18 @@ class _MusicsListPagenState extends State<MusicsListPagen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          flexibleSpace: Container(decoration: myBoxDecorationbg()),
-          title: const Text("BUddy"),
-          centerTitle: true,
+        appBar: customAppbar("Buddy My Playlist"),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: firstGradientColor,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddMediaForm()),
+            );
+            setState(() {});
+          },
+          child: const Icon(Icons.add),
         ),
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -71,11 +83,11 @@ class _MusicsListPagenState extends State<MusicsListPagen> {
                                             .toString() ==
                                         'null')
                                     // ? 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgrHboTd5Da4QhuyKxlisU1dRY7bc-QZi6ooxfeBPnWDJ-ieaVE8RifHK1sjZ33bdh0Tu3HHNM6XLFOwg7Zfj6xhifNms5yECVg22qhTkOnotzTZQbHuvhVY27IksyrhsZ28GM1ljsvX7gyIeH1cMaqxRhTyqfVL7sB75Qv6Nwj92z31BIWK9hXuBx0o8Ij/s3456/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9%20(43).jpg'
-                                    ? 'https://www.udacity.com/blog/wp-content/uploads/2021/02/img8.png'
+                                    ? alert
                                     : musicsId[index]['media_image'].toString(),
                                 playlistId:
                                     musicsId[index]['playlist_id'].toString(),
-                                audioUrl: musicsId[index]['url'].toString(),
+                                // audioUrl: musicsId[index]['url'].toString(),
                               )))
                     ],
                   ),
@@ -124,15 +136,14 @@ class _MusicsListPagenState extends State<MusicsListPagen> {
                           margin: const EdgeInsets.only(right: 12),
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      // musicsIdInk == null ||
-                                      musicsIdInk[0]['media_image']
+                                  image: NetworkImage(musicsIdInk == null ||
+                                          musicsIdInk[0]['media_image']
                                                   .toString() ==
                                               'null'
-                                          ? 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbhBFhIQQ3FDLJkEavTSwUiCeeaAxbblI4LUBEyKGeRcmzjaixSDnf31gk0S9BGqwEGwwgpi714lTSnFq9K1RaY1jTT2vf2lU4Nr24T_J8IDNFWBAMorbPjRF-G_7E-buEpM7BOM-U8ornF8ua6Y05ibYD_0bwUsxx2JR_H_N6-0xjq9YtIhUdikzG2MjT/s1080/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9.jpg'
-                                          : musicsIdInk[0]['media_image']
-                                              //  musicsId[currentMusic]['media_image']
-                                              .toString()),
+                                      ? 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbhBFhIQQ3FDLJkEavTSwUiCeeaAxbblI4LUBEyKGeRcmzjaixSDnf31gk0S9BGqwEGwwgpi714lTSnFq9K1RaY1jTT2vf2lU4Nr24T_J8IDNFWBAMorbPjRF-G_7E-buEpM7BOM-U8ornF8ua6Y05ibYD_0bwUsxx2JR_H_N6-0xjq9YtIhUdikzG2MjT/s1080/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9.jpg'
+                                      : musicsIdInk[0]['media_image']
+                                          //  musicsId[currentMusic]['media_image']
+                                          .toString()),
                                   // 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbhBFhIQQ3FDLJkEavTSwUiCeeaAxbblI4LUBEyKGeRcmzjaixSDnf31gk0S9BGqwEGwwgpi714lTSnFq9K1RaY1jTT2vf2lU4Nr24T_J8IDNFWBAMorbPjRF-G_7E-buEpM7BOM-U8ornF8ua6Y05ibYD_0bwUsxx2JR_H_N6-0xjq9YtIhUdikzG2MjT/s1080/%D8%B5%D9%88%D8%B1-%D9%88%D8%B1%D8%AF-%D8%AC%D9%85%D9%8A%D9%84%D8%A9.jpg'),
                                   fit: BoxFit.cover)),
                         ),

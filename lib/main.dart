@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+// import 'package:yacoode/log_in.dart';z
+import 'package:yacoode/ui/splash/splash_home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,10 +14,10 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      // home: SplashPage(),
-
-      home: MyHomePage(title: "Buddy"),
+      // home: LoginScreen(),
+      home: SplashHomePage(),
     );
   }
 }
-// 0534773957
+// // 0534773957
+
